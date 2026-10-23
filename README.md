@@ -75,7 +75,7 @@
 ```bash
 pkg update && pkg upgrade -y
 pkg install git -y
-git clone https://github.com/YourUsername/RDX-CALL.git
+git clone https://github.com/rdx99-stack/RDX-CALL-BOMBER.git
 cd RDX-CALL
 chmod +x install.sh
 ./install.sh

